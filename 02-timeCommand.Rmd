@@ -1,0 +1,36 @@
+# `time` command
+
+One of the first things you should do is measure the total time your program takes. Doing so is easy with the Linux `time` command. 
+
+```bash
+time <command>
+```
+
+For example, if I run this on the `gm2 v6_04_00` code, I get,
+
+```bash
+time gm2 -c mdc0.fcl -n 500
+```
+
+```
+# lots of output from the program above>
+# for gm2 v6_04_00
+real	2m1.455s
+user	2m1.518s
+sys	    0m1.282s
+```
+
+The `real` time is the actual wall clock time the program took to complete. So when you issued the command, it took 2 minutes 1.45 seconds to run. The `user` and `sys` time represent how much time the machine's processors were spending on non-kernel functions and kernel functions respectively. Kernel functions involve low-level OS operations like I/O. Given that most of our programs are computationally intensive, you should the the vast majority of time taken in `user`. If the program involves a lot of I/O, then the `real` time may be significantly more than `user` time due to waiting for disk reads and writes. I am using a virtual machine for these examples. If you are using a shared machine and there is significant additional activity on the machine, then that will also increase the `real` time. 
+
+Note that you see that the `real` wall clock time is slightly less than the `user` time, which may seem to make little sense. In fact, `user` and `sys` time are the total time taken by all processors. Because the _MessageFacility_ of _art_ runs in a separate thread, there are actually two processors spending time. Thus, the total time may be more than the real wall clock time. 
+
+Here is the output for `gm2 v7_03_00`,
+
+```
+# for gm2 v7_03_00
+real	5m33.849s
+user	8m15.264s
+sys	    0m37.830s
+```
+
+Indeed by wall clock time, the new version of `gm2` takes almost three times longer than the old version! It is interesting to note that the `sys` time is significant larger in the new version and the `user` time is much larger than the `real` time. These results may be hints that the _MessageFacility_ thread is using much more time in the `v7` version of _gm2_ than `v6`. We can try to confirm this suspicion and understand why with more advanced tools. 

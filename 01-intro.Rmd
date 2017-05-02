@@ -1,0 +1,9 @@
+# Introduction {#intro}
+
+As a friend of mine once said, "If it isn't instantaneous, then your code is too slow". While instantaneous applications are unfortunately unrealistic, it is important for your code to run as fast as possible. Therefore, it is important to measure how long your code takes to run and use tools to understand where time is being spent and to find bottlenecks. 
+
+For this document, we'll use the Muon _g-2_ Geant based ring simulation. There were hints that a recent release of the software, `gm2 v7_03_00` was significantly slower than and older version `gm2 v6_04_00`. The differences between the versions are using much new versions of _art_, _Geant4_, and _Root_. Furthermore, _Geant4_ `gm2 v7_03_00` is using a new geometry and transportation system called _USolids_. There was a lot of worry that the slowness was because one of these updated external libraries was much slower than before. If that is indeed the case, it may be difficult to make the code faster. 
+
+Furthermore, there is another slow down in the simulation between `gm2 v7_05_00` and `gm2 v7_04_00`. That will be explored in the chapter about `igprof`. 
+
+The following chapters will describe how to use various tools to learn more about the speed of your code, using the example mentioned above. 

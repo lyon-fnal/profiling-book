@@ -1,0 +1,21 @@
+# Profiling with Allinea
+
+_Allinea_ is an advanced profiler tool for which the lab has a limited number of licenses. Anyone can install _Allinea_, but you will need a license file to use it for taking profiling data. Ask Adam Lyon for the file. 
+
+Please keep your Allinea usage to a minimum, as we have a linited number of licenses. While Allinea is running and collecting profiling data, you are taking up a license. 
+
+While you can't collect profiling data for a linux application on your Mac, you can download Allinea for the Mac and use it to nicely view the profiling data. Doing so does not use a license. 
+
+## Downloading Allinea Forge
+
+Allinea `map` is the profiling tool and comes with the Allinea Forge package. Go to https://www.allinea.com/products/forge/download and download and unpack the appropriate flavor of the program. Note that Scientific Linux is the same as Red Hat Enterprise Linux. For most machines, you will likely want the Red Hat Enterprise 6.0+ 64 bit download. Be sure to ask Adam for the license file. 
+
+## Running Allinea Map Data Collection
+
+Note that if you are running away from the Fermilab site, you will need the Fermilab VPN in order to get a license. Launch the VPN first. 
+
+Setup your development/running environment. Now run the profiler,
+
+```
+ <installDir>/allinea/bin/map --profile -o v7.map $ART_FQ_DIR/bin/gm2 -c mdc0.fcl -n 1000
+```

@@ -1,0 +1,15 @@
+--- 
+knit: "bookdown::render_book"
+title: "Time Profiling"
+author: "Adam L. Lyon (Fermilab/SCD)"
+date: "`r Sys.Date()`"
+classoption: landscape
+output: bookdown::gitbook
+documentclass: book
+github-repo: rstudio/bookdown-demo
+description: "How to do profiling of g-2 code"
+---
+
+# Preface {-}
+
+Optimizing code for speed and memory is extremely important for HEP applications. This document will explain some process and tools available for profiling the time a program takes. 

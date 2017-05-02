@@ -1,0 +1,5 @@
+Package: profilingBook
+Title: This is not really an R package, but this is here to list the dependencies for building the output from source.
+Version: 0.0.1
+Imports: bookdown
+Remotes: rstudio/bookdown
