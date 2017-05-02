@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Time Profiling</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta name="description" content="How to do profiling of g-2 code">
+  <meta name="generator" content="bookdown 0.3.1 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Time Profiling" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="How to do profiling of g-2 code" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Time Profiling" />
+  
+  <meta name="twitter:description" content="How to do profiling of g-2 code" />
+  
+
+<meta name="author" content="Adam L. Lyon (Fermilab/SCD)">
+
+
+<meta name="date" content="2017-05-02">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="module-and-event-timing.html">
+<link rel="next" href="profiling-with-allinea.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Time profiling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="time-command.html"><a href="time-command.html"><i class="fa fa-check"></i><b>2</b> <code>time</code> command</a></li>
+<li class="chapter" data-level="3" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html"><i class="fa fa-check"></i><b>3</b> Module and event timing</a><ul>
+<li class="chapter" data-level="3.1" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html#summary-printout"><i class="fa fa-check"></i><b>3.1</b> Summary printout</a></li>
+<li class="chapter" data-level="3.2" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html#database"><i class="fa fa-check"></i><b>3.2</b> Database</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html"><i class="fa fa-check"></i><b>4</b> Time Profiling with igprof</a><ul>
+<li class="chapter" data-level="4.1" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#running-igprof"><i class="fa fa-check"></i><b>4.1</b> Running igprof</a></li>
+<li class="chapter" data-level="4.2" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#interpreting-igprof-timing-results-from-web-page"><i class="fa fa-check"></i><b>4.2</b> Interpreting igprof timing results from web page</a></li>
+<li class="chapter" data-level="4.3" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#another-analysis"><i class="fa fa-check"></i><b>4.3</b> Another analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html"><i class="fa fa-check"></i><b>5</b> Profiling with Allinea</a><ul>
+<li class="chapter" data-level="5.1" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html#downloading-allinea-forge"><i class="fa fa-check"></i><b>5.1</b> Downloading Allinea Forge</a></li>
+<li class="chapter" data-level="5.2" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html#running-allinea-map-data-collection"><i class="fa fa-check"></i><b>5.2</b> Running Allinea Map Data Collection</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Time Profiling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="time-profiling-with-igprof" class="section level1">
+<h1><span class="header-section-number">4</span> Time Profiling with igprof</h1>
+<p><code>igprof</code> (see <a href="http://igprof.org" class="uri">http://igprof.org</a>) is a powerful profiling application that was originally written for the CMS experiment. <code>igprof</code> is available in CVMFS. As of this writing, you can set it up with <code>setup igprof v5_9_16 -q e10</code>.</p>
+<p><code>igprof</code> can do time and memory profiling. We will concentrate on the time performance profiling for this chapter. An advantage of <code>igprof</code> is that it does not access the source code at all (unlike <code>allinea</code>). So you can run <code>igprof</code> on releases without having to check out any code. Of course profiling any fixes and changes will require the source code and builds.</p>
+<div id="running-igprof" class="section level2">
+<h2><span class="header-section-number">4.1</span> Running igprof</h2>
+<p>With an environment already set up, including <code>igprof</code> (see above), you can run the time profiling with, for example, …</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">igprof</span> -pp -d -z -t gm2 -o <span class="kw">&lt;</span>igprof.pp.gz<span class="kw">&gt;</span> gm2 -c theFCL.fcl -n 500</code></pre></div>
+<p>The options mean…</p>
+<ul>
+<li><code>-pp</code> Do time profiling</li>
+<li><code>-d</code> add more details (like demangling c++ names)</li>
+<li><code>-z</code> compress the output</li>
+<li><code>-t &lt;app&gt;</code> only look at a process named <code>app</code></li>
+<li><code>-o &lt;file&gt;</code> write output to <code>file</code></li>
+<li>The rest of the arguments are the program to run with its options</li>
+</ul>
+<p>For example,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">igprof</span> -pp -d -z -t gm2 -o v7_05_mdc1_igprof.gz gm2 -c mdc1.fcl -n 500</code></pre></div>
+<p>The output file is generally not human readable. You need to run <code>igprof-analyze</code> to put it in a more readable form. You can make an ASCII file or an <code>sqlite</code> database that can be browsed with another tool. I prefer the latter option and so that process will be explained here. See <a href="http://igprof.org/analysis.html" class="uri">http://igprof.org/analysis.html</a> and <a href="http://igprof.org/text-output-format.html" class="uri">http://igprof.org/text-output-format.html</a> for information about ASCII output.</p>
+<p>To make the database, do,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">igprof-analyse</span> --sqlite -d -g -v <span class="kw">&lt;</span>igprof.pp.gz<span class="kw">&gt;</span> <span class="kw">|</span> <span class="kw">sqlite3</span> <span class="kw">&lt;</span>out.db<span class="kw">&gt;</span></code></pre></div>
+<p>The options mean…</p>
+<ul>
+<li><code>-d -g</code> and more demangling information</li>
+<li><code>-v</code> verbose mode</li>
+</ul>
+<p>For example,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">unsetup</span> python    <span class="co"># the ups python interferes</span>
+<span class="kw">igprof-analyse</span> --sqlite -d -g -v v7_05_mdc1_igprof.gz <span class="kw">|</span> <span class="kw">sqlite3</span> v7_05_mdc1_igprof.db</code></pre></div>
+<p>Now that you have the database, you can run <code>igprof-navigator</code> to browse the timings with your web browser. To set that up, run,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">igprof-navigator</span> <span class="kw">&lt;</span>out.db<span class="kw">&gt;</span> -p <span class="kw">&lt;</span>port<span class="kw">&gt;</span></code></pre></div>
+<p>For example,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">igprof-navigator</span> v7_05_mdc1_igprof.db -p 8080</code></pre></div>
+<p>The application will print the URL, but note that only the port is correct. You will likely need to port forward to access the web page and do, e.g., <code>http://localhost:8080</code>. Be sure to stop the server when you are finished with Ctrl-C.</p>
+</div>
+<div id="interpreting-igprof-timing-results-from-web-page" class="section level2">
+<h2><span class="header-section-number">4.2</span> Interpreting igprof timing results from web page</h2>
+<p>See the previous section for setting up, running <code>igprof</code>, and setting up the navigator web server. We’ll go through an example using the g-2 simulation program.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-top"></span>
+<img src="images/igprof_top.png" alt="First page" width="1106" />
+<p class="caption">
+Figure 4.1: First page
+</p>
+</div>
+<p>The top web page is shown in Fig. <a href="time-profiling-with-igprof.html#fig:ig-top">4.1</a>, and it shows the cumulative “cost” of called functions in the program. Cumulative means the time spent in that function in seconds, and <em>all</em> of the functions it calls (so the top function takes all of the running time). All of the functions on top are infrastructure for <code>art</code>, but those should be really fast. The best strategy is to look for drops in Cumulative time. Where there’s a drop means that some code as branched off and is taking time. Let’s start with that.</p>
+<p>The first drop is between items #7 and #8. Something took almost 90s to run. Let’s figure that out. Click on the <code>7</code> (or the corresponding name of the function).</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-7"></span>
+<img src="images/ig-7.png" alt="First branch point" width="90%" />
+<p class="caption">
+Figure 4.2: First branch point
+</p>
+</div>
+<p>Figure <a href="time-profiling-with-igprof.html#fig:ig-7">4.2</a> shows the new page. All of the detailed pages will look like this, so let’s go through it.</p>
+<ul>
+<li>The beige background row is the function under scrutiny (the one you clicked on to get here)</li>
+<li>The rows above (dark green) are functions that call the scrutinized function</li>
+<li>The rows below (light green) are functions that are called by the scrutinized function</li>
+</ul>
+<p>The <em>Rank</em> column is only for the scrutinized function and shows where it is in the cumulative timings of all the functions. So <code>art::run_art_common_</code> is the 7th most time consuming function of the program.</p>
+<p>The <em>%total</em> column shows the fraction of all time of the program spent in that particular function <em>including</em> all functions that is calls (cumulative!).</p>
+<p>The <em>Counts</em> column shows how many seconds are spent in the function for different circumstances.</p>
+<ul>
+<li>For the caller functions (dark green), <em>to/from</em> shows the time spent in the caller function waiting for the scrutinized function to return. <em>Total</em> includes the time the caller function takes.</li>
+<li>For the scrutinized function (beige), <em>to/from</em> shows the time spent only in the scrutinized function alone. <em>Total</em> includes the time in the functions it calls (so <code>art::run_art_common_</code> itself takes no time – all of the time is spent in functions that it calls),</li>
+<li>For the called functions (light green), both columns show the same thing and that’s how many seconds are spent in the called function and all functions they call (cumulative).</li>
+</ul>
+<p>The <em>Paths</em> column is not interesting for our purposes here.</p>
+<p>So for our example, the 90 seconds goes into <code>art::EventProcessor::EventProcessor</code> - the constructor for <code>EventProcessor</code>. The next thing to do is to click on that function and then keep clicking on the 90s function until we see something interesting. It takes many clicks.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-50"></span>
+<img src="images/ig-50.png" alt="Detector builders" width="90%" />
+<p class="caption">
+Figure 4.3: Detector builders
+</p>
+</div>
+<p>We finally get to Fig. <a href="time-profiling-with-igprof.html#fig:ig-50">4.3</a> where we see where the 90s goes. It is split among the functions that build detectors when the program starts. As expected, the CadMesh functions take the most time. We could click on the most expensive function <code>gm2ringsim::StrawTrackerCadMesh</code>, and see where its time goes. As expected, it’s all in CadMesh as shown in Fig. <a href="time-profiling-with-igprof.html#fig:ig-51">4.4</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-51"></span>
+<img src="images/ig-51.png" alt="CadMesh" width="90%" />
+<p class="caption">
+Figure 4.4: CadMesh
+</p>
+</div>
+<p>So here you see that almost all of the 90s is taken up by <code>CADMesh::TessellatedMesh</code> and that’s called by various other functions.</p>
+<p>So the upshot here is that the target of work for speedup should be <code>CADMesh::TessellatedMesh</code> itself.</p>
+</div>
+<div id="another-analysis" class="section level2">
+<h2><span class="header-section-number">4.3</span> Another analysis</h2>
+<p>We’ve just figured out the cost of staring the simulation. Fortunately, that’s a one time cost. Let’s go back and look at the main cause of time spent generating events. In Fig. <a href="time-profiling-with-igprof.html#fig:ig-7">4.2</a>, we see that <code>art::EventProcessor::runToCompletion</code> takes up the most time. That is the function that generates events. Anything in here that takes time gets amplified by the number of events the simulation is producing. Let’s look to see if anything stands out. Click on <code>art::EventProcessor::runToCompletion</code> and keep clicking on the called function that takes the longest.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-32"></span>
+<img src="images/ig-32.png" alt="Field Lookups" width="90%" />
+<p class="caption">
+Figure 4.5: Field Lookups
+</p>
+</div>
+<p>Eventually we get to Fig. <a href="time-profiling-with-igprof.html#fig:ig-32">4.5</a>. We see that <code>gm2geom::gm2FieldManager::GetUnifiedField</code> takes up 40% of the running time (200 seconds). It is called by many Geant functions. It then calls several functions in <code>gm2geom</code>. The largest ones involve the fringe field and the storage ring field. Let’s look at the Fringe field.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-38"></span>
+<img src="images/ig-38.png" alt="Fringe Field" width="90%" />
+<p class="caption">
+Figure 4.6: Fringe Field
+</p>
+</div>
+<p>Figure <a href="time-profiling-with-igprof.html#fig:ig-38">4.6</a> shows <code>gm2geom::FringeField::getFringeField</code>. Much time is spent in interpolating. Can we interpolate less? There are also calls getting services and constants. Perhaps those can be cached.</p>
+<p>Let’s look at the storage field performance too.</p>
+<div class="figure" style="text-align: center"><span id="fig:ig-58"></span>
+<img src="images/ig-58.png" alt="Services" width="90%" />
+<p class="caption">
+Figure 4.7: Services
+</p>
+</div>
+<p>Again, more constants and service handling. Perhaps there are improvements here to be made.</p>
+<p>The next step is to look at the code or do further performance testing with allinea (next section).</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="module-and-event-timing.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="profiling-with-allinea.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

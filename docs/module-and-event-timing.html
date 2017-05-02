@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Time Profiling</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta name="description" content="How to do profiling of g-2 code">
+  <meta name="generator" content="bookdown 0.3.1 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Time Profiling" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="How to do profiling of g-2 code" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Time Profiling" />
+  
+  <meta name="twitter:description" content="How to do profiling of g-2 code" />
+  
+
+<meta name="author" content="Adam L. Lyon (Fermilab/SCD)">
+
+
+<meta name="date" content="2017-05-02">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="time-command.html">
+<link rel="next" href="time-profiling-with-igprof.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Time profiling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="time-command.html"><a href="time-command.html"><i class="fa fa-check"></i><b>2</b> <code>time</code> command</a></li>
+<li class="chapter" data-level="3" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html"><i class="fa fa-check"></i><b>3</b> Module and event timing</a><ul>
+<li class="chapter" data-level="3.1" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html#summary-printout"><i class="fa fa-check"></i><b>3.1</b> Summary printout</a></li>
+<li class="chapter" data-level="3.2" data-path="module-and-event-timing.html"><a href="module-and-event-timing.html#database"><i class="fa fa-check"></i><b>3.2</b> Database</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html"><i class="fa fa-check"></i><b>4</b> Time Profiling with igprof</a><ul>
+<li class="chapter" data-level="4.1" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#running-igprof"><i class="fa fa-check"></i><b>4.1</b> Running igprof</a></li>
+<li class="chapter" data-level="4.2" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#interpreting-igprof-timing-results-from-web-page"><i class="fa fa-check"></i><b>4.2</b> Interpreting igprof timing results from web page</a></li>
+<li class="chapter" data-level="4.3" data-path="time-profiling-with-igprof.html"><a href="time-profiling-with-igprof.html#another-analysis"><i class="fa fa-check"></i><b>4.3</b> Another analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html"><i class="fa fa-check"></i><b>5</b> Profiling with Allinea</a><ul>
+<li class="chapter" data-level="5.1" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html#downloading-allinea-forge"><i class="fa fa-check"></i><b>5.1</b> Downloading Allinea Forge</a></li>
+<li class="chapter" data-level="5.2" data-path="profiling-with-allinea.html"><a href="profiling-with-allinea.html#running-allinea-map-data-collection"><i class="fa fa-check"></i><b>5.2</b> Running Allinea Map Data Collection</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Time Profiling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="module-and-event-timing" class="section level1">
+<h1><span class="header-section-number">3</span> Module and event timing</h1>
+<p>A next step could be to understand how long time is being spent in particular <em>art</em> modules and on a more event by event level. Because the bulk of the simulation runs in the <code>artg4</code> producer, this measurement may be less useful compared to a many module <em>art</em> job. But it will still be instructive so it is good to do.</p>
+<p>The <code>TimeTracker</code> <em>art</em> service provides timing information about each module and statistics over events. It can also create a database with event by event timing information. You can run <code>TimeTracker</code> by adding the following to your FCL file…</p>
+<pre><code>services : {
+
+// ...
+
+  TimeTracker : {
+    printSummary : true
+    dbOutput : {
+       filename : &quot;v7_timing.db&quot;
+       overwrite : true
+    }
+  }
+  
+// ...
+
+}</code></pre>
+<p>See <a href="http://cdcvs.fnal.gov/redmine/projects/art/wiki/TimeTracker" class="uri">http://cdcvs.fnal.gov/redmine/projects/art/wiki/TimeTracker</a> for more information and instructions.</p>
+<div id="summary-printout" class="section level2">
+<h2><span class="header-section-number">3.1</span> Summary printout</h2>
+<p>The default usage of the service and the configuration described here prints out a summary of timing information at the end of the job. For our example comparing <code>gm2 v6_04_00</code> and <code>gm2 v7_03_00</code>, we get the following output…</p>
+<pre><code># v6_04_00
+TimeReport ---------- Time  Summary ---[sec]----
+TimeReport CPU = 48.492349 Real = 48.291652
+
+================================================================================================================================
+TimeTracker printout (sec)                        Min           Avg           Max         Median          RMS         nEvts
+================================================================================================================================
+Full event                                    0.00430586     0.0969926     0.979898      0.0567863     0.111273        500
+--------------------------------------------------------------------------------------------------------------------------------
+path1:randomsaver:RandomNumberSaver           1.5818e-05    2.97016e-05   0.000218545   2.39715e-05   1.6956e-05       500
+path1:artg4:artg4Main                         0.00312922     0.0931658     0.970814      0.0553228     0.108083        500
+path1:TriggerResults:TriggerResultInserter     9.438e-06    1.54518e-05   9.9472e-05    1.2985e-05    8.65874e-06      500
+end_path:out1:RootOutput                      0.000232495   0.00371359     0.163321     0.00142215    0.00797466       500
+================================================================================================================================</code></pre>
+<p>and</p>
+<pre><code># v7_03_00
+TimeReport ---------- Time  Summary ---[sec]----
+TimeReport CPU = 457.772410 Real = 259.748750
+
+================================================================================================================================
+TimeTracker printout (sec)                        Min           Avg           Max         Median          RMS         nEvts
+================================================================================================================================
+Full event                                     0.0103769     0.519505       4.16775      0.257809      0.594227        500
+--------------------------------------------------------------------------------------------------------------------------------
+path1:randomsaver:RandomNumberSaver           3.2923e-05    5.95679e-05   0.00119983    4.83085e-05   5.79987e-05      500
+path1:artg4:artg4Main                           0.01027      0.519357       4.16762      0.257689      0.594228        500
+path1:TriggerResults:TriggerResultInserter    1.7502e-05    2.29663e-05   9.7601e-05    2.09805e-05   7.6282e-06       500
+end_path:out1:RootOutput                       2.405e-06    3.71508e-06   2.0902e-05    3.5705e-06    1.11764e-06      500
+end_path:out1:RootOutput(write)               0.000217776   0.00289537     0.0216031    0.00107864     0.0031938       500
+================================================================================================================================</code></pre>
+<p>Note the statistics for events. The only producer that really matters here is <code>artg4::artg4Main</code>, which runs Geant. On average, for <code>v6</code> we see it took Geant 0.093s/muon and for <code>v7</code> we see it took Geant 0.52s/muon. This is a dramatic difference. It is also interesting to look at the extremes - there was an event run by <code>v7</code> that took over four seconds!</p>
+</div>
+<div id="database" class="section level2">
+<h2><span class="header-section-number">3.2</span> Database</h2>
+<p>As shown in the FCL fragment above, <code>TimeTracker</code> can optionally output a database with timing information for each event. Let’s look at the timing information for <code>v7</code>. For the analysis we’ll use <em>R</em>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+
+db &lt;-<span class="st"> </span><span class="kw">src_sqlite</span>(<span class="st">&quot;data/v7_timing.db&quot;</span>)
+db</code></pre></div>
+<pre><code>## src:  sqlite 3.11.1 [data/v7_timing.db]
+## tbls: TimeEvent, TimeModule, TimeReport</code></pre>
+<p>The <code>TimeEvent</code> table has the total time for each event.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">te &lt;-<span class="st"> </span><span class="kw">tbl</span>(db, <span class="st">&quot;TimeEvent&quot;</span>)
+te %&gt;%<span class="st"> </span><span class="kw">collect</span>()</code></pre></div>
+<pre><code>## # A tibble: 500 × 4
+##      Run Subrun Event       Time
+##    &lt;int&gt;  &lt;int&gt; &lt;int&gt;      &lt;dbl&gt;
+## 1      1      0     1 0.04066667
+## 2      1      0     2 2.11977645
+## 3      1      0     3 1.11163810
+## 4      1      0     4 0.02122142
+## 5      1      0     5 0.01811102
+## 6      1      0     6 1.90626422
+## 7      1      0     7 1.49305715
+## 8      1      0     8 1.78778369
+## 9      1      0     9 0.35362362
+## 10     1      0    10 0.03596895
+## # ... with 490 more rows</code></pre>
+<p>The <code>TimeModule</code> table has the time for each event broken down by module.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tm &lt;-<span class="st"> </span><span class="kw">tbl</span>(db, <span class="st">&quot;TimeModule&quot;</span>)
+tm %&gt;%<span class="st"> </span><span class="kw">collect</span>()</code></pre></div>
+<pre><code>## # A tibble: 2,500 × 5
+##      Run Subrun Event                               PathModuleId
+##    &lt;int&gt;  &lt;int&gt; &lt;int&gt;                                      &lt;chr&gt;
+## 1      1      0     1        path1:randomsaver:RandomNumberSaver
+## 2      1      0     1                      path1:artg4:artg4Main
+## 3      1      0     1 path1:TriggerResults:TriggerResultInserter
+## 4      1      0     1                   end_path:out1:RootOutput
+## 5      1      0     1            end_path:out1:RootOutput(write)
+## 6      1      0     2        path1:randomsaver:RandomNumberSaver
+## 7      1      0     2                      path1:artg4:artg4Main
+## 8      1      0     2 path1:TriggerResults:TriggerResultInserter
+## 9      1      0     2                   end_path:out1:RootOutput
+## 10     1      0     2            end_path:out1:RootOutput(write)
+## # ... with 2,490 more rows, and 1 more variables: Time &lt;dbl&gt;</code></pre>
+<p>The <code>TimeReport</code> table gives the same information as the printed output from the <code>TimeTracker</code> service.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tr &lt;-<span class="st"> </span><span class="kw">tbl</span>(db,<span class="st">&quot;TimeReport&quot;</span>)
+tr %&gt;%<span class="st"> </span><span class="kw">collect</span>()</code></pre></div>
+<pre><code>## # A tibble: 6 × 7
+##                                   ReportType         Min         Mean
+##                                        &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;
+## 1                                 Full event 0.011088641 5.674523e-01
+## 2        path1:randomsaver:RandomNumberSaver 0.000036479 7.262060e-05
+## 3                      path1:artg4:artg4Main 0.010938725 5.672769e-01
+## 4 path1:TriggerResults:TriggerResultInserter 0.000019366 2.520183e-05
+## 5                   end_path:out1:RootOutput 0.000003411 4.426006e-06
+## 6            end_path:out1:RootOutput(write) 0.000236947 3.200830e-03
+## # ... with 4 more variables: Max &lt;dbl&gt;, Median &lt;dbl&gt;, RMS &lt;dbl&gt;,
+## #   nEvts &lt;int&gt;</code></pre>
+<p>We can make plots…</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tm %&gt;%<span class="st"> </span><span class="kw">filter</span>(PathModuleId ==<span class="st"> &#39;path1:artg4:artg4Main&#39;</span>) %&gt;%<span class="st"> </span><span class="kw">collect</span>() -&gt;<span class="st"> </span>artg4Time 
+artg4Time %&gt;%<span class="st"> </span><span class="kw">ggplot</span>( <span class="kw">aes</span>(<span class="dt">x=</span>Event, <span class="dt">y=</span>Time) ) +<span class="st"> </span><span class="kw">geom_point</span>() </code></pre></div>
+<p><img src="profile-book_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">artg4Time %&gt;%<span class="st"> </span><span class="kw">ggplot</span>( <span class="kw">aes</span>(<span class="dt">x=</span>Time) ) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">bins=</span><span class="dv">50</span>)</code></pre></div>
+<p><img src="profile-book_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="time-command.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="time-profiling-with-igprof.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
