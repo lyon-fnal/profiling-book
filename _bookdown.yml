@@ -1,4 +1,4 @@
-book_filename: "bookdown-demo"
-language:
-  ui:
-    chapter_name: "Chapter "
+book_filename: "profile-book"
+chapter_name: ""
+repo: https://github.com/lyon-fnal/profiling-book
+output_dir: docs
